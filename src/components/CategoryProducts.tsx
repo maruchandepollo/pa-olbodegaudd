@@ -2,120 +2,105 @@ import { useState } from "react";
 import { ChevronDown, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { Database } from "@/integrations/supabase/types";
+import { Card } from "@/components/ui/card";
+import { Producto, Categoria } from "@/types";
 
-type Product = Database["public"]["Tables"]["products"]["Row"];
-type Category = Database["public"]["Enums"]["product_category"];
-
-interface CategoryProductsProps {
-  category: Category;
-  products: Product[];
-  onEdit: (product: Product) => void;
-  onDelete: (product: Product) => void;
+interface Props {
+  category: Categoria;
+  products: Producto[];
+  onEdit: (product: Producto) => void;
+  onDelete: (product: Producto) => void;
 }
 
-const categoryLabels: Record<Category, string> = {
-  clima: "Clima",
-  herramientas: "Herramientas",
-  varios: "Varios",
+const categoryInfo = {
+  clima: { label: "Clima", icon: "❄️", color: "bg-blue-500/10 border-blue-500/20" },
+  herramientas: { label: "Herramientas", icon: "🔧", color: "bg-orange-500/10 border-orange-500/20" },
+  varios: { label: "Varios", icon: "📦", color: "bg-gray-500/10 border-gray-500/20" },
 };
 
-const categoryIcons: Record<Category, string> = {
-  clima: "❄️",
-  herramientas: "🔧",
-  varios: "📦",
-};
+export function CategoryProducts({ category, products, onEdit, onDelete }: Props) {
+  const [open, setOpen] = useState(true);
 
-export function CategoryProducts({
-  category,
-  products,
-  onEdit,
-  onDelete,
-}: CategoryProductsProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const categoryProducts = products.filter((p) => {
-    return p.category === category;
-  });
+  const list = products.filter((p) => p.categoria === category);
+  if (list.length === 0) return null;
 
-  if (categoryProducts.length === 0) return null;
+  const info = categoryInfo[category];
 
   return (
-    <div className="border rounded-lg overflow-hidden dark:border-slate-700">
+    <Card className={`overflow-hidden border ${info.color} dark:bg-slate-800`}>
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-card hover:bg-muted transition-colors dark:bg-slate-800 dark:hover:bg-slate-700"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 dark:hover:bg-slate-700 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <span className="text-xl">{categoryIcons[category]}</span>
+          <span className="text-2xl">{info.icon}</span>
           <div className="text-left">
-            <h3 className="font-semibold text-foreground">{categoryLabels[category]}</h3>
-            <p className="text-xs text-muted-foreground">{categoryProducts.length} producto(s)</p>
+            <p className="font-semibold text-foreground">{info.label}</p>
+            <p className="text-xs text-muted-foreground">{list.length} producto(s)</p>
           </div>
         </div>
         <ChevronDown
           className={`h-5 w-5 text-muted-foreground transition-transform ${
-            isExpanded ? "rotate-180" : ""
+            open ? "rotate-180" : ""
           }`}
         />
       </button>
 
-      {isExpanded && (
+      {open && (
         <div className="divide-y dark:divide-slate-700">
-          {categoryProducts.map((product) => {
-            const isLow =
-              product.quantity > 0 && product.quantity <= product.low_stock_threshold;
-            const isOut = product.quantity === 0;
+          {list.map((p) => {
+            const isOutOfStock = p.cantidad === 0;
 
             return (
               <div
-                key={product.id}
-                className="px-4 py-3 hover:bg-muted/50 dark:hover:bg-slate-700/50 transition-colors"
+                key={p.id}
+                className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-muted/30 dark:hover:bg-slate-700/50 transition-colors"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground truncate">{product.name}</p>
-                    {product.model && (
-                      <p className="text-xs text-muted-foreground truncate">{product.model}</p>
-                    )}
-                    {product.location && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        📍 {product.location}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    {isOut ? (
-                      <Badge variant="destructive">0</Badge>
-                    ) : isLow ? (
-                      <Badge className="bg-warning/15 text-warning border-warning/30">
-                        {product.quantity}
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary">{product.quantity}</Badge>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => onEdit(product)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => onDelete(product)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground truncate">{p.nombre}</p>
+                  {p.modelo && (
+                    <p className="text-xs text-muted-foreground truncate">{p.modelo}</p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {isOutOfStock ? (
+                    <Badge variant="destructive">{p.cantidad}</Badge>
+                  ) : p.cantidad < 5 ? (
+                    <Badge className="bg-warning/15 text-warning border-warning/30">
+                      {p.cantidad}
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary">{p.cantidad}</Badge>
+                  )}
+
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8"
+                    onClick={() => onEdit(p)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={() => {
+                      if (confirm(`¿Eliminar ${p.nombre}?`)) {
+                        onDelete(p);
+                      }
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             );
           })}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

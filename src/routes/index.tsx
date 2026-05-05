@@ -15,7 +15,7 @@ import { useTheme } from "@/hooks/use-theme";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Pañol — Gestión de Inventario" },
+      { title: "Pañol de Bodega — Gestión de Inventario" },
       { name: "description", content: "Sistema de control de inventario para pañol. Registro de entradas, salidas y seguimiento en tiempo real." },
     ],
   }),
@@ -152,9 +152,8 @@ function Index() {
       />
       <MovementDialog
         open={showMovement}
-        onOpenChange={setShowMovement}
+        onClose={() => setShowMovement(false)}
         products={products}
-        defaultType={movementType}
         onSubmit={async (data) => {
           try {
             await addMovement(data);

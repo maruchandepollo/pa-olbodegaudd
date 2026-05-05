@@ -1,67 +1,49 @@
-import { Package, ArrowDownCircle, ArrowUpCircle, AlertTriangle } from "lucide-react";
-import type { Database } from "@/integrations/supabase/types";
+import { Producto } from "@/types";
+import { Card } from "@/components/ui/card";
+import { Package, Archive, AlertCircle } from "lucide-react";
 
-type Product = Database["public"]["Tables"]["products"]["Row"];
-
-interface StatsCardsProps {
-  products: Product[];
-}
-
-export function StatsCards({ products }: StatsCardsProps) {
-  const totalProducts = products.length;
-  const totalStock = products.reduce((sum, p) => sum + p.quantity, 0);
-  const lowStock = products.filter((p) => p.quantity <= p.low_stock_threshold);
-  const outOfStock = products.filter((p) => p.quantity === 0);
-
-  const stats = [
-    {
-      label: "Productos",
-      value: totalProducts,
-      icon: Package,
-      color: "text-primary",
-      bg: "bg-primary/10",
-    },
-    {
-      label: "Unidades en stock",
-      value: totalStock,
-      icon: ArrowDownCircle,
-      color: "text-success",
-      bg: "bg-success/10",
-    },
-    {
-      label: "Stock bajo",
-      value: lowStock.length,
-      icon: AlertTriangle,
-      color: "text-warning",
-      bg: "bg-warning/10",
-    },
-    {
-      label: "Sin stock",
-      value: outOfStock.length,
-      icon: ArrowUpCircle,
-      color: "text-destructive",
-      bg: "bg-destructive/10",
-    },
-  ];
+export function StatsCards({ products }: { products: Producto[] }) {
+  const total = products.length;
+  const stock = products.reduce((acc, p) => acc + p.cantidad, 0);
+  const low = products.filter((p) => p.cantidad === 0).length;
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-      {stats.map((s) => (
-        <div
-          key={s.label}
-          className="rounded-xl border bg-card p-4 shadow-sm"
-        >
-          <div className="flex items-center gap-3">
-            <div className={`rounded-lg p-2 ${s.bg}`}>
-              <s.icon className={`h-5 w-5 ${s.color}`} />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-foreground">{s.value}</p>
-              <p className="text-xs text-muted-foreground">{s.label}</p>
-            </div>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <Card className="p-4 dark:bg-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-blue-500/10 rounded-lg">
+            <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium">Productos</p>
+            <p className="text-2xl font-bold text-foreground">{total}</p>
           </div>
         </div>
-      ))}
+      </Card>
+
+      <Card className="p-4 dark:bg-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-green-500/10 rounded-lg">
+            <Archive className="h-5 w-5 text-green-600 dark:text-green-400" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium">Total Stock</p>
+            <p className="text-2xl font-bold text-foreground">{stock}</p>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-4 dark:bg-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-red-500/10 rounded-lg">
+            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground font-medium">Sin Stock</p>
+            <p className="text-2xl font-bold text-destructive">{low}</p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
