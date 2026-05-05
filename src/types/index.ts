@@ -16,5 +16,6 @@ export interface Movimiento {
   cantidad: number;
   persona: string;
   area: string;
+  destination_location?: string;
   fecha: string;
 }
