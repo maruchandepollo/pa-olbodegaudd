@@ -1,131 +1,113 @@
-# Sistema de Gestión de Pañol
+# Frontend - Sistema de Gestión de Pañol
 
-Aplicación web diseñada para el control de inventario de productos y herramientas, permitiendo gestionar de forma simple y eficiente el ingreso y salida de artículos en un pañol.
-
----
-
-## Descripción
-
-Este sistema permite llevar un registro en tiempo real del stock disponible, así como el historial de movimientos (retiros y devoluciones), facilitando la trazabilidad y control de los recursos.
-
-Está pensado para ser utilizado por múltiples usuarios de forma simultánea, con una interfaz intuitiva y rápida de usar.
+Aplicación web para la gestión de inventario y movimientos de productos en un pañol. Permite visualizar stock, registrar entradas y salidas, y consultar el historial de movimientos de forma simple e intuitiva.
 
 ---
 
-## Funcionalidades
+## Tecnologías utilizadas
 
-### Gestión de Inventario
-
-* Registro de productos con:
-
-  * Nombre
-  * Modelo
-  * Cantidad disponible
-* Visualización en tabla ordenable
-* Búsqueda por nombre o modelo
-
-### Registro de Movimientos
-
-* Salida de productos:
-
-  * Producto
-  * Cantidad
-  * Persona que retira
-  * Área solicitante
-  * Fecha automática
-* Ingreso de productos (devolución o reposición)
-
-### Control en Tiempo Real
-
-* Actualización automática del stock
-* Validación de disponibilidad antes de retirar productos
-
-### Multiusuario
-
-* Uso simultáneo por múltiples personas
-* Cambios sincronizados en tiempo real
-
-### Historial y Trazabilidad
-
-* Registro completo de movimientos
-* Filtros por:
-
-  * Fecha
-  * Producto
-  * Persona
+* React
+* JavaScript (ES6+)
+* HTML5
+* CSS3
+* Fetch API / Axios
+* Vite
 
 ---
 
-## Interfaz
+## Estructura del proyecto
 
-* Diseño moderno y minimalista
-* Navegación simple e intuitiva
-* Dashboard principal con:
-
-  * Estado del inventario
-  * Últimos movimientos
-
----
-
-## Tecnologías (referenciales)
-
-* Frontend: React
-* Backend: Firebase / Supabase
-* Base de datos en la nube
-* Hosting web
+```
+src/
+├── components/
+├── pages/
+├── services/
+├── hooks/
+├── styles/
+└── App.jsx
+```
 
 ---
 
-## Instalación (si aplica)
+## Instalación
 
-```bash
-# Clonar repositorio
-git clone <url-del-repositorio>
+1. Clonar repositorio
 
-# Instalar dependencias
+```
+git clone <url-del-repo>
+cd frontend-panol
+```
+
+2. Instalar dependencias
+
+```
 npm install
+```
 
-# Ejecutar en entorno local
+3. Ejecutar aplicación
+
+```
 npm run dev
 ```
 
 ---
 
-## Acceso
+## Configuración
 
-* Sistema opcional de autenticación
-* Usuarios autorizados para operar el sistema
+Configurar la URL del backend en los servicios:
 
----
-
-## Estructura del Proyecto (ejemplo)
+Ejemplo:
 
 ```
-/src
-  /components
-  /pages
-  /services
-  /hooks
-  /styles
+const API_URL = "http://localhost:3000";
 ```
 
 ---
 
-## Mejoras Futuras
+## Funcionalidades
 
-* Alertas de bajo stock
-* Exportación a Excel
-* Control de roles de usuario
-* Notificaciones en tiempo real
-
----
-
-## Uso
-
-Este sistema está diseñado para facilitar el control de inventario en entornos donde múltiples personas gestionan herramientas o insumos compartidos.
+* Visualización de inventario en tiempo real
+* Registro de productos
+* Registro de movimientos (entrada y salida)
+* Actualización automática del stock
+* Interfaz simple y rápida de usar
 
 ---
 
-## Licencia
+## Integración con backend
 
-Uso interno / privado (ajustar según necesidad).
+El frontend consume la API REST del backend:
+
+* GET /productos
+* POST /productos
+* POST /movimientos
+
+---
+
+## Estado del proyecto
+
+En desarrollo
+
+Incluye:
+
+* Vista de productos
+* Registro básico de productos
+* Registro de movimientos
+* Conexión con backend
+
+Pendiente:
+
+* Historial de movimientos
+* Filtros y búsqueda avanzada
+* Manejo de errores en interfaz
+* Notificaciones al usuario
+* Mejora de UI/UX
+* Deploy
+
+---
+
+## Notas
+
+* Diseñado para uso interno en gestión de pañol
+* Enfocado en simplicidad y rapidez de uso
+* Integrado con backend propio desarrollado en Node.js
